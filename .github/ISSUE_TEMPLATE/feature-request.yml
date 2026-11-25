@@ -1,0 +1,65 @@
+name: Feature request
+description: Propose a workflow improvement for Sysra.
+title: "[Feature Request] "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing open and closed issues first. Explain the task you need
+        to complete and the result you expect. Keep private information out of
+        the report.
+  - type: checkboxes
+    id: existing-issues
+    attributes:
+      label: Existing requests
+      options:
+        - label: I searched existing issues for this request.
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What task is difficult today?
+      description: >-
+        Describe your needs and where the current workflow falls short.
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Requested workflow
+      description: >-
+        Describe the starting state, actions, and expected result in the
+        terminal.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: What would make this complete?
+      description: >-
+        List observable outcomes, including affected system metrics, agent
+        usage, or configuration where relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or workarounds
+      description: >-
+        What have you tried or considered, and why is it insufficient?
+  - type: textarea
+    id: context
+    attributes:
+      label: Examples or context
+      description: >-
+        Add related issues or sanitized examples, including OS or terminal
+        details if relevant.
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Would you like to contribute?
+      options:
+        - I am proposing the idea only
+        - I can help validate the workflow
+        - I would like to implement it once the scope is agreed

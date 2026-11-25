@@ -1,0 +1,65 @@
+name: Bug report
+description: Report a reproducible problem in Sysra.
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing open and closed issues before submitting. Remove
+        credentials,
+        private paths, prompts, and other sensitive information from
+        attachments.
+  - type: checkboxes
+    id: existing-issues
+    attributes:
+      label: Existing reports
+      options:
+        - label: I searched existing issues for this problem.
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the problem and what it prevents you from doing.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: >-
+        Include the starting state, relevant configuration, and repeatable
+        steps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or source commit
+      description: Provide the release version or Git commit, if known.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: >-
+        Include your OS and version, terminal and version, and shell. If
+        relevant, include the AI agent and version. Do not include secrets or
+        private paths.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or error details
+      description: >-
+        Add sanitized screenshots, errors, relevant logs, and any workaround you
+        tried.
