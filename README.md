@@ -1,12 +1,14 @@
-# sysra
+# ![sysra](docs/logo.svg)
 
-```text
- ___ _   _ ___ _ __ __ _
-/ __| | | / __| '__/ _` |
-\__ \ |_| \__ \ | | (_| |
-|___/\__, |___/_|  \__,_|
-     |___/
+```sh
+curl -fsSL https://raw.githubusercontent.com/utpalsinghdev/sysra/main/install.sh | sh
 ```
+
+![Linux: x86_64 and arm64](https://img.shields.io/badge/Linux-x86__64%20%7C%20arm64-475467?logo=linux)
+![macOS: Intel and Apple Silicon](https://img.shields.io/badge/macOS-Intel%20%7C%20Apple%20Silicon-475467?logo=apple)
+![Rust edition 2024](https://img.shields.io/badge/Rust-2024-965237?logo=rust)
+[![Latest release](https://img.shields.io/github/v/release/utpalsinghdev/sysra?color=5e50bb)](https://github.com/utpalsinghdev/sysra/releases/latest)
+[![CI](https://github.com/utpalsinghdev/sysra/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/utpalsinghdev/sysra/actions/workflows/ci.yml)
 
 A terminal system monitor for Linux and macOS. See CPU, memory, disk I/O, and listening ports by app instead of sorting through individual processes. If you use coding agents, sysra also shows their token usage and available plan limits.
 
@@ -20,7 +22,7 @@ A terminal system monitor for Linux and macOS. See CPU, memory, disk I/O, and li
 - [Keybindings](#keybindings)
 - [Themes](#themes) · [Built-in themes](#built-in-themes) · [Custom themes](#custom-themes)
 - [Configuration](#configuration) · [Config file options](#config-file-options) · [Command-line options](#command-line-options)
-- [Platform notes](#platform-notes) · [Releasing](#releasing) · [License](#license)
+- [Platform notes](#platform-notes) · [License](#license)
 
 ## Screenshots
 
@@ -77,14 +79,9 @@ Override data locations with `CLAUDE_CONFIG_DIR`, `CODEX_HOME`, `PI_CODING_AGENT
 
 ### Prebuilt binaries
 
-Install the latest [GitHub release](https://github.com/utpalsinghdev/sysra/releases/latest):
+The install command at the top downloads the latest [GitHub release](https://github.com/utpalsinghdev/sysra/releases/latest). It picks the archive for your OS and CPU, verifies its SHA-256 checksum, and installs `sysra` to `~/.local/bin`.
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/utpalsinghdev/sysra/main/install.sh | sh
-sysra
-```
-
-The installer picks the archive for your OS and CPU, requires a matching SHA-256 checksum, and installs `sysra` to `~/.local/bin`. If the shell cannot find `sysra`, add that directory to your `PATH` or run `~/.local/bin/sysra`.
+Run `sysra` after installation. If the shell cannot find it, add `~/.local/bin` to your `PATH` or run `~/.local/bin/sysra`.
 
 | Installer setting | Default | Example |
 | --- | --- | --- |
@@ -237,19 +234,6 @@ claude_live_limits = false
 - Use a truecolor terminal and a monospace font with braille and box-drawing glyphs. If panels or columns are missing, enlarge the terminal window.
 - On Linux, listening ports come from `/proc`. Your account may not be able to see ports for processes owned by other users.
 - macOS does not show listening ports. For live Claude plan limits, sysra can use the existing Claude Code login from Keychain.
-
-## Releasing
-
-Add a [changeset](.changeset/README.md) for user-facing changes. Before cutting a new release, run `npm ci` and `npm run version:release` with Node.js 22 or later, then commit the version and changelog updates. For the initial release, `0.1.0` is already recorded.
-
-Create and push a stable tag that matches `Cargo.toml`, for example:
-
-```sh
-git tag v0.1.0
-git push origin v0.1.0
-```
-
-The [release workflow](.github/workflows/release.yml) builds and attaches all four archives and their checksums to a GitHub release. A manual run on a branch builds artifacts without publishing a release.
 
 ## License
 
