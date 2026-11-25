@@ -1,0 +1,101 @@
+name: release
+
+# Push a tag like v0.1.0 to build binaries and publish a GitHub release.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            cross: true
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-latest
+            cross: true
+          - target: x86_64-apple-darwin
+            os: macos-15-intel
+            cross: false
+          - target: aarch64-apple-darwin
+            os: macos-15
+            cross: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Check tag against Cargo version
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          package=$(cargo pkgid --locked)
+          version=${package##*#}
+          version=${version##*@}
+          stable='^v[0-9]+\.[0-9]+\.[0-9]+$'
+          tag=$GITHUB_REF_NAME
+          if [[ ! "$tag" =~ $stable || "$tag" != "v$version" ]]; then
+            printf 'Expected stable release tag v%s, got %s\n' \
+              "$version" "$GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+      - uses: taiki-e/install-action@18101caa61cb89118e2ee749786f33c6d1f8a8cb # v2
+        if: matrix.cross
+        with:
+          tool: cross
+      - name: Build
+        shell: bash
+        run: |
+          if [ "${{ matrix.cross }}" = "true" ]; then
+            cross build --release --locked --target ${{ matrix.target }}
+          else
+            cargo build --release --locked --target ${{ matrix.target }}
+          fi
+      - name: Package
+        run: sh scripts/package-release.sh ${{ matrix.target }}
+      - name: Smoke-test installer
+        if: matrix.target != 'aarch64-unknown-linux-musl'
+        shell: bash
+        run: |
+          export SYSRA_DOWNLOAD_URL="file://$PWD/dist"
+          export SYSRA_INSTALL_DIR="$RUNNER_TEMP/sysra/bin"
+          sh install.sh
+          package=$(cargo pkgid --locked)
+          version=${package##*#}
+          installed=$("$SYSRA_INSTALL_DIR/sysra" --version)
+          test "$installed" = "sysra ${version##*@}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sysra-${{ matrix.target }}
+          path: |
+            dist/sysra-${{ matrix.target }}.tar.gz
+            dist/sysra-${{ matrix.target }}.tar.gz.sha256
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          path: dist
+          merge-multiple: true
+      - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: dist/*
+          fail_on_unmatched_files: true
+          generate_release_notes: true
