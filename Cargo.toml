@@ -1,0 +1,30 @@
+[package]
+name = "sysra"
+version = "0.1.0"
+edition = "2024"
+description = "A calm, app-centric system monitor for the terminal, with AI agent token usage"
+license = "MIT"
+repository = "https://github.com/utpalsinghdev/sysra"
+readme = "README.md"
+keywords = ["tui", "monitor", "system", "btop", "top"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+anyhow = "1.0.105"
+chrono = { version = "0.4.45", default-features = false, features = ["clock", "std"] }
+crossterm = "0.29.0"
+dirs = "7.0.0"
+ratatui = "0.30.2"
+rusqlite = { version = "0.43.0", features = ["bundled"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+sysinfo = { version = "0.40.4", default-features = false, features = ["system", "disk", "network", "user"] }
+toml = "1.2.3"
+ureq = { version = "3.5.2", default-features = false, features = ["rustls", "gzip"] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = true
+panic = "abort"
